@@ -1,4 +1,4 @@
-import { createUserPrisma, updateUserPrisma } from "../model/userPrismamodel"
+import { createUserPrisma, getAllUserPrisma, getUserById, updateUserPrisma } from "../model/userPrismamodel"
 import { Request,Response } from "express"
 
 
@@ -23,4 +23,26 @@ const updteUserController=async(req:Request,res:Response)=>{
         res.status(404).json("Unable to update")
     }
 }
-export{createUserContoller,updteUserController}
+const getUserController=async(req:Request,res:Response)=>{
+    try{
+        const data=await getAllUserPrisma()
+        res.status(200).json(data)
+    }catch{
+        res.status(404).json("Unable to fetch the data")
+    }
+}
+
+const getByidController=async(req:Request,res:Response)=>{
+    try{
+        const id = Number(req.params.id)
+        const data=await getUserById(id)
+      
+        res.status(200).json(data)
+    }
+    catch{
+        res.status(404).json("Unable to find the data")
+    }
+}
+
+
+export{createUserContoller,updteUserController,getUserController,getByidController}

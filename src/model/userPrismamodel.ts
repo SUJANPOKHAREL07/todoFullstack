@@ -36,6 +36,20 @@ async function updateUserPrisma(data:{
     })
     return updated
 }
+async function getAllUserPrisma() {
+    const data= await prisma.user.findMany()
+    return data
+}
 
+async function getUserById(id:number) {
+    const data=await prisma.user.findUnique({
+        where:{
+            id:id
+        },
+       
+    })
+    return data
+    
+}
 
-export{createUserPrisma,updateUserPrisma}
+export{createUserPrisma,updateUserPrisma,getAllUserPrisma,getUserById}
