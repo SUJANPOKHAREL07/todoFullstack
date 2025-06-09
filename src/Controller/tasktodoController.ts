@@ -1,5 +1,5 @@
 import { Request,Response } from "express";
-import { createTaskPrisma, getAllTaskPrisma, updateTaskPrisma } from "../model/taskPrismaModel";
+import { createTaskPrisma, getAllTaskPrisma, getTaskbyIDPrisma, updateTaskPrisma } from "../model/taskPrismaModel";
 
 
 const createTaskController=async(req:Request,res:Response)=>{
@@ -30,5 +30,15 @@ const getAllTaskController=async(req:Request,res:Response)=>{
         res.status(404).json("Unable to fetch data")
     }
 }
+const getTaskByIDCOntroller=async(req:Request,res:Response)=>{
+    try{
+        const id=Number(req.params.id)
+        const data=await getTaskbyIDPrisma(id)
+        res.status(200).json(data)
+    }
+    catch{
+        res.status(404).json("Unable to find the data")
+    }
+}
 
-export {createTaskController,updateTaskController,getAllTaskController}
+export {createTaskController,updateTaskController,getAllTaskController,getTaskByIDCOntroller}

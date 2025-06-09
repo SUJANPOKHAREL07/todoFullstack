@@ -34,7 +34,31 @@ async function updateTaskPrisma(data: {
   return update;
 }
 async function getAllTaskPrisma() {
-    const data=await prisma.tasktodo.findMany()
+    const data=await prisma.tasktodo.findMany({
+        include:{
+            user:{
+                select:{
+                    userName:true,
+                    
+                }
+            }       }
+    })
     return data
 }
-export { createTaskPrisma, updateTaskPrisma,getAllTaskPrisma };
+async function getTaskbyIDPrisma(id:number) {
+    const data=await prisma.tasktodo.findUnique({
+        where:{
+            id:id
+        },
+        include:{
+            user:{
+                select:{
+                    userName:true,
+                    email:true
+                }
+            }
+        }
+    })
+    return data
+}
+export { createTaskPrisma, updateTaskPrisma,getAllTaskPrisma,getTaskbyIDPrisma };
