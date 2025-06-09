@@ -16,7 +16,26 @@ async function createUserPrisma(data:{
     return created
 }
 
+async function updateUserPrisma(data:{
+    id:number,
+    userName:string,
+    email:string,
+    password:string
+}) {
+    const updated=await prisma.user.update({
+        where:{
+            id:data.id
+        },
+        data:{
+            userName:data.userName,
+        email:data.email,
+        password:data.password
+        
+        }
+        
+    })
+    return updated
+}
 
 
-
-export{createUserPrisma}
+export{createUserPrisma,updateUserPrisma}
