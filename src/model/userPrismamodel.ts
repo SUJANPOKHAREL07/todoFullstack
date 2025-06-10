@@ -51,5 +51,14 @@ async function getUserById(id:number) {
     return data
     
 }
+async function deleteUserPrisma(id:number) {
+    const data=await prisma.user.delete({
+        where:{
+            id:id
+        }
+    })
+    console.log(data)
+    return data
+}
 
-export{createUserPrisma,updateUserPrisma,getAllUserPrisma,getUserById}
+export{createUserPrisma,updateUserPrisma,getAllUserPrisma,getUserById,deleteUserPrisma}

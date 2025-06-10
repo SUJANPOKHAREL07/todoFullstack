@@ -43,7 +43,7 @@ const getTaskByIDCOntroller=async(req:Request,res:Response)=>{
 const deletetaskController=async(req:Request,res:Response)=>{
     try{
         const id=Number(req.params.id)
-        const data=await deleteTaskPrisma(id)
+        await deleteTaskPrisma(id)
         res.status(200).json("Task is deletd")
     }
     catch{

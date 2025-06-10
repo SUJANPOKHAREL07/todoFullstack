@@ -8,7 +8,7 @@ const PORT = 3000
 app.use(express.json())
 
 app.use("/user",userRouter)
-app.use("/tasks",taskRouter)
+app.use("/task",taskRouter)
 
 app.listen(PORT,()=>{
     console.log("You are on port number:",PORT)

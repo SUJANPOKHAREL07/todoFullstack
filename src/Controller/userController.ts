@@ -1,4 +1,4 @@
-import { createUserPrisma, getAllUserPrisma, getUserById, updateUserPrisma } from "../model/userPrismamodel"
+import { createUserPrisma, deleteUserPrisma, getAllUserPrisma, getUserById, updateUserPrisma } from "../model/userPrismamodel"
 import { Request,Response } from "express"
 
 
@@ -43,6 +43,16 @@ const getByidController=async(req:Request,res:Response)=>{
         res.status(404).json("Unable to find the data")
     }
 }
+const deleteUserCOntroller=async(req:Request,res:Response)=>{
+    try{
+        const id = Number(req.params.id)
+        const deleteget=await getUserById(id)
+        console.log(deleteget   )
+        const data=await deleteUserPrisma(id)
+        res.status(200).json("User is deleted")
+    }catch{
+        res.status(404).json("Unable to delete user")
+    }
+}
 
-
-export{createUserContoller,updteUserController,getUserController,getByidController}
+export{createUserContoller,updteUserController,getUserController,getByidController,deleteUserCOntroller}
