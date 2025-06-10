@@ -61,4 +61,12 @@ async function getTaskbyIDPrisma(id:number) {
     })
     return data
 }
-export { createTaskPrisma, updateTaskPrisma,getAllTaskPrisma,getTaskbyIDPrisma };
+async function deleteTaskPrisma(id:number) {
+  const datadelete=await prisma.tasktodo.delete({
+    where:{
+      id:id
+    }
+  })
+  return datadelete
+}
+export { createTaskPrisma, updateTaskPrisma,getAllTaskPrisma,getTaskbyIDPrisma,deleteTaskPrisma };

@@ -1,5 +1,5 @@
 import { Request,Response } from "express";
-import { createTaskPrisma, getAllTaskPrisma, getTaskbyIDPrisma, updateTaskPrisma } from "../model/taskPrismaModel";
+import { createTaskPrisma, deleteTaskPrisma, getAllTaskPrisma, getTaskbyIDPrisma, updateTaskPrisma } from "../model/taskPrismaModel";
 
 
 const createTaskController=async(req:Request,res:Response)=>{
@@ -40,5 +40,15 @@ const getTaskByIDCOntroller=async(req:Request,res:Response)=>{
         res.status(404).json("Unable to find the data")
     }
 }
+const deletetaskController=async(req:Request,res:Response)=>{
+    try{
+        const id=Number(req.params.id)
+        const data=await deleteTaskPrisma(id)
+        res.status(200).json("Task is deletd")
+    }
+    catch{
+        res.status(404).json("Unable to delete task")
+    }
+}
 
-export {createTaskController,updateTaskController,getAllTaskController,getTaskByIDCOntroller}
+export {createTaskController,updateTaskController,getAllTaskController,getTaskByIDCOntroller,deletetaskController}
