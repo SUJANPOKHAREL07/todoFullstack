@@ -51,4 +51,5 @@ const deletetaskController=async(req:Request,res:Response)=>{
     }
 }
 
+
 export {createTaskController,updateTaskController,getAllTaskController,getTaskByIDCOntroller,deletetaskController}
