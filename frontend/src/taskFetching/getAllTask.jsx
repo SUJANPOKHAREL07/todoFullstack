@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Deletetasks from './deleteTask';
+import  { deleteTask } from './deleteTask';
 
 export default function GetAllTask() {
   const [data, setData] = useState(null);
@@ -27,7 +27,13 @@ export default function GetAllTask() {
 
     fetchTasks();
   }, []);
-
+ const handleDelete = async (id) => {
+    const success = await deleteTask(id);
+    if (success) {
+      window.location.reload( )
+      fetchTasks(); // Refetch after successful delete
+    }
+  };
   if (isLoading) {
     return <div className="flex justify-center items-center h-[100vh]">Loading...</div>;
   }
@@ -50,7 +56,9 @@ export default function GetAllTask() {
            Status: {item.status === "Completed" ? "✅ Completed" : item.status === "Cancled" ? "❌ Cancled" : "⏲️ Pending"}
           </label>
           <div className="flex space-x-3">
-            <button className='bg-red-500 rounded-md font-bold flex justify-center text-white w-20 '
+            <button className='bg-red-500 rounded-md font-bold flex justify-center text-white w-20 ' onClick={()=>{
+              handleDelete(item.id)
+            }}
             >Delete</button>
           <button className='bg-blue-500 rounded-md font-bold flex justify-center text-white w-20' >Edit</button>
           </div>
