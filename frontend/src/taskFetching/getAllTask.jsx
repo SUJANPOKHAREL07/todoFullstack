@@ -1,24 +1,31 @@
-import React, { useEffect, useState } from 'react';
-import  { deleteTask } from './deleteTask';
+import React, { useEffect, useState } from "react";
+import { deleteTask } from "./deleteTask";
+import { CreateTask } from "./createTask";
+import TaskCreationForm from "./taskCreationForm";
+import Modal from "../components/modal";
+import {IoCloseCircleOutline} from 'react-icons/io5'
 
 export default function GetAllTask() {
-  const [data, setData] = useState(null);
+  const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isCreate, setIsCreate] = useState(false);
+  const [newTitle, setNewTitle] = useState("");
+  const [newStatus, setNewStatus] = useState("Pending");
+  const [newAssigendID, setnewAssigendID] = useState("");
   const [isError, setIsError] = useState(false);
-
 
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const res = await fetch('http://localhost:3000/task');
+        const res = await fetch("http://localhost:3000/task");
         if (!res.ok) {
-          throw new Error('Failed to fetch tasks');
+          throw new Error("Failed to fetch tasks");
         }
         const json = await res.json();
         setData(json);
         setIsError(false);
       } catch (error) {
-        console.error('Fetch error:', error);
+        console.error("Fetch error:", error);
         setIsError(true);
       } finally {
         setIsLoading(false);
@@ -27,19 +34,42 @@ export default function GetAllTask() {
 
     fetchTasks();
   }, []);
- const handleDelete = async (id) => {
+  const handleDelete = async (id) => {
     const success = await deleteTask(id);
     if (success) {
-      window.location.reload( )
-      fetchTasks(); // Refetch after successful delete
+      window.location.reload();
+      fetchTasks();
+    }
+  };
+  const handleCreate = async () => {
+    const success  = await CreateTask({
+      title: newTitle,
+      status: newStatus,
+      userID: Number(newAssigendID),
+    });
+    if (success) {
+      setNewTitle("");
+      setNewStatus("Pending");
+      newAssigendID("");
+      setIsCreate(false)
+     
+      await fetchTasks();
     }
   };
   if (isLoading) {
-    return <div className="flex justify-center items-center h-[100vh]">Loading...</div>;
+    return (
+      <div className="flex justify-center items-center h-[100vh]">
+        Loading...
+      </div>
+    );
   }
 
   if (isError) {
-    return <div className="flex justify-center items-center h-[100vh]">Error fetching data</div>;
+    return (
+      <div className="flex justify-center items-center h-[100vh]">
+        Error fetching data
+      </div>
+    );
   }
 
   if (!data || data.length === 0) {
@@ -47,24 +77,69 @@ export default function GetAllTask() {
   }
 
   return (
-    <div className=' grid grid-cols-3'>
-      {data.map((item) => (
-        <div key={item.id} className='bg-gray-100 w-[18rem] rounded-md'>
-          <div className='font-bold'>{item.title}
-          </div>
-          <label htmlFor="">
-           Status: {item.status === "Completed" ? "✅ Completed" : item.status === "Cancled" ? "❌ Cancled" : "⏲️ Pending"}
-          </label>
-          <div className="flex space-x-3">
-            <button className='bg-red-500 rounded-md font-bold flex justify-center text-white w-20 ' onClick={()=>{
-              handleDelete(item.id)
-            }}
-            >Delete</button>
-          <button className='bg-blue-500 rounded-md font-bold flex justify-center text-white w-20' >Edit</button>
-          </div>
-          
-        </div>
-      ))}
+    <>
+    <div className="mb-5 flex justify-center">
+       <button className="bg-green-600 text-white px-4 py-1 rounded mt-2"
+        onClick={() => {
+          setIsCreate(true);
+        }}
+      >
+        Create New Task
+      </button>
     </div>
+      <div className=" grid grid-cols-3 gap-4 p-4">
+        {data.map((item) => (
+          <div key={item.id} className="bg-gray-100 w-[18rem] rounded-md">
+            <div className="font-bold">{item.title}</div>
+            <label htmlFor="">
+              Status:{" "}
+              {item.status === "Completed"
+                ? "✅ Completed"
+                : item.status === "Cancled"
+                ? "❌ Cancled"
+                : "⏲️ Pending"}
+            </label>
+            <div className="flex space-x-3">
+              <button
+                className="bg-red-500 rounded-md font-bold flex justify-center text-white w-20 "
+                onClick={() => {
+                  handleDelete(item.id);
+                }}
+              >
+                Delete
+              </button>
+              <button className="bg-blue-500 rounded-md font-bold flex justify-center text-white w-20">
+                Edit
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+     
+      
+     {isCreate && (
+      <Modal onClose={()=>{
+        setIsCreate(false)
+      }}>
+         
+   <div className="bg-white">
+   <button className="hover:cursor-pointer "  onClick={()=>{
+    setIsCreate(false)
+   }}>  <IoCloseCircleOutline className="bg-white ml-[20rem] text-xl  text-red-500" />
+    </button>
+        <TaskCreationForm
+          newTitle={newTitle}
+          newStatus={newStatus}
+          newAssigendID={newAssigendID}
+          setNewTitle={setNewTitle}
+          setNewStatus={setNewStatus}
+          setnewAssigendID={setnewAssigendID}
+          handleCreate={handleCreate}
+        />
+       
+      </div>  
+      </Modal>
+     )}
+    </>
   );
 }

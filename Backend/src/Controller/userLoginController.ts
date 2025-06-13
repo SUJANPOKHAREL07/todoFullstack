@@ -16,12 +16,10 @@ const checkLogin = async (req: Request, res: Response) => {
     const check = await checkUserbyEmail(email, password);
     // res.status(200).json(check);
 
-    if (check && check.length>0) {
+    if (check && check.length > 0) {
       const checkMail = await checkinUserLogin(email);
-      
 
       if (checkMail === undefined || checkMail === null) {
-       
         const store = await storeUserLoginModal({ email, password });
         res.status(200).json("User registered and logged in");
       } else {
