@@ -13,7 +13,7 @@ export default function GetAllTask() {
   const [isCreate, setIsCreate] = useState(false);
   const [newTitle, setNewTitle] = useState("");
   const [isEdit, setIsEdit] = useState(false);
-    const [editTaskId, setEditTaskId] = useState(2);
+  const [editTaskId, setEditTaskId] = useState(2);
   const [newStatus, setNewStatus] = useState("Pending");
   const [newAssigendID, setnewAssigendID] = useState("");
   const [isError, setIsError] = useState(false);
@@ -54,28 +54,26 @@ export default function GetAllTask() {
     if (success) {
       setNewTitle("");
       setNewStatus("Pending");
-      newAssigendID("");
+      setnewAssigendID("");
       setIsCreate(false);
-    
+        window.location.reload()
       await fetchTasks();
     }
   };
   const handleUpdate = async () => {
-    const success = await UpdateTAsk(editTaskId,{
+    const success = await UpdateTAsk(editTaskId, {
       title: newTitle,
       status: newStatus,
       userID: newAssigendID,
-    
     });
     if (success) {
       setIsEdit(false);
-     setNewTitle("");
+      setNewTitle("");
       setNewStatus("Pending");
       newAssigendID("");
       await fetchTasks();
     }
   };
-   
 
   if (isLoading) {
     return (
@@ -132,10 +130,10 @@ export default function GetAllTask() {
               </button>
               <button
                 onClick={() => {
-                  setEditTaskId(item.id)
-                  setNewTitle(item.title)
-                  setNewStatus(item.status)
-                  setnewAssigendID(item.userID)
+                  setEditTaskId(item.id);
+                  setNewTitle(item.title);
+                  setNewStatus(item.status);
+                  setnewAssigendID(item.userID);
                   setIsEdit(true);
                 }}
                 className="bg-blue-500 rounded-md font-bold flex justify-center text-white w-20"
@@ -183,14 +181,13 @@ export default function GetAllTask() {
               <IoCloseCircleOutline className="bg-white ml-[20rem] text-xl  text-red-500" />
             </button>
             <UpdateTaskForrm
-                newTitle={newTitle}
+              newTitle={newTitle}
               newStatus={newStatus}
               newAssigendID={newAssigendID}
               setNewTitle={setNewTitle}
               setNewStatus={setNewStatus}
               setnewAssigendID={setnewAssigendID}
               handleUpdate={handleUpdate}
-            
             />
           </div>
         </Modal>
