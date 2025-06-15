@@ -3,13 +3,17 @@ import { deleteTask } from "./deleteTask";
 import { CreateTask } from "./createTask";
 import TaskCreationForm from "./taskCreationForm";
 import Modal from "../components/modal";
-import {IoCloseCircleOutline} from 'react-icons/io5'
+import { IoCloseCircleOutline } from "react-icons/io5";
+import { UpdateTAsk } from "./updateTask";
+import UpdateTaskForrm from "./updateTaskForm";
 
 export default function GetAllTask() {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isCreate, setIsCreate] = useState(false);
   const [newTitle, setNewTitle] = useState("");
+  const [isEdit, setIsEdit] = useState(false);
+    const [editTaskId, setEditTaskId] = useState(2);
   const [newStatus, setNewStatus] = useState("Pending");
   const [newAssigendID, setnewAssigendID] = useState("");
   const [isError, setIsError] = useState(false);
@@ -42,7 +46,7 @@ export default function GetAllTask() {
     }
   };
   const handleCreate = async () => {
-    const success  = await CreateTask({
+    const success = await CreateTask({
       title: newTitle,
       status: newStatus,
       userID: Number(newAssigendID),
@@ -51,11 +55,28 @@ export default function GetAllTask() {
       setNewTitle("");
       setNewStatus("Pending");
       newAssigendID("");
-      setIsCreate(false)
-     
+      setIsCreate(false);
+    
       await fetchTasks();
     }
   };
+  const handleUpdate = async () => {
+    const success = await UpdateTAsk(editTaskId,{
+      title: newTitle,
+      status: newStatus,
+      userID: newAssigendID,
+    
+    });
+    if (success) {
+      setIsEdit(false);
+     setNewTitle("");
+      setNewStatus("Pending");
+      newAssigendID("");
+      await fetchTasks();
+    }
+  };
+   
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-[100vh]">
@@ -78,15 +99,16 @@ export default function GetAllTask() {
 
   return (
     <>
-    <div className="mb-5 flex justify-center">
-       <button className="bg-green-600 text-white px-4 py-1 rounded mt-2"
-        onClick={() => {
-          setIsCreate(true);
-        }}
-      >
-        Create New Task
-      </button>
-    </div>
+      <div className="mb-5 flex justify-center">
+        <button
+          className="bg-green-600 text-white px-4 py-1 rounded mt-2"
+          onClick={() => {
+            setIsCreate(true);
+          }}
+        >
+          Create New Task
+        </button>
+      </div>
       <div className=" grid grid-cols-3 gap-4 p-4">
         {data.map((item) => (
           <div key={item.id} className="bg-gray-100 w-[18rem] rounded-md">
@@ -108,38 +130,71 @@ export default function GetAllTask() {
               >
                 Delete
               </button>
-              <button className="bg-blue-500 rounded-md font-bold flex justify-center text-white w-20">
+              <button
+                onClick={() => {
+                  setEditTaskId(item.id)
+                  setNewTitle(item.title)
+                  setNewStatus(item.status)
+                  setnewAssigendID(item.userID)
+                  setIsEdit(true);
+                }}
+                className="bg-blue-500 rounded-md font-bold flex justify-center text-white w-20"
+              >
                 Edit
               </button>
             </div>
           </div>
         ))}
       </div>
-     
-      
-     {isCreate && (
-      <Modal onClose={()=>{
-        setIsCreate(false)
-      }}>
-         
-   <div className="bg-white">
-   <button className="hover:cursor-pointer "  onClick={()=>{
-    setIsCreate(false)
-   }}>  <IoCloseCircleOutline className="bg-white ml-[20rem] text-xl  text-red-500" />
-    </button>
-        <TaskCreationForm
-          newTitle={newTitle}
-          newStatus={newStatus}
-          newAssigendID={newAssigendID}
-          setNewTitle={setNewTitle}
-          setNewStatus={setNewStatus}
-          setnewAssigendID={setnewAssigendID}
-          handleCreate={handleCreate}
-        />
-       
-      </div>  
-      </Modal>
-     )}
+
+      {isCreate && (
+        <Modal>
+          <div className="bg-white">
+            <button
+              className="hover:cursor-pointer "
+              onClick={() => {
+                setIsCreate(false);
+              }}
+            >
+              {" "}
+              <IoCloseCircleOutline className="bg-white ml-[20rem] text-xl  text-red-500" />
+            </button>
+            <TaskCreationForm
+              newTitle={newTitle}
+              newStatus={newStatus}
+              newAssigendID={newAssigendID}
+              setNewTitle={setNewTitle}
+              setNewStatus={setNewStatus}
+              setnewAssigendID={setnewAssigendID}
+              handleCreate={handleCreate}
+            />
+          </div>
+        </Modal>
+      )}
+      {isEdit && (
+        <Modal>
+          <div className="bg-white">
+            <button
+              onClick={() => {
+                setIsEdit(false);
+              }}
+            >
+              {" "}
+              <IoCloseCircleOutline className="bg-white ml-[20rem] text-xl  text-red-500" />
+            </button>
+            <UpdateTaskForrm
+                newTitle={newTitle}
+              newStatus={newStatus}
+              newAssigendID={newAssigendID}
+              setNewTitle={setNewTitle}
+              setNewStatus={setNewStatus}
+              setnewAssigendID={setnewAssigendID}
+              handleUpdate={handleUpdate}
+            
+            />
+          </div>
+        </Modal>
+      )}
     </>
   );
 }

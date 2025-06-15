@@ -1,19 +1,18 @@
 
 
-export default function TaskCreationForm({
+export default function UpdateTaskForrm({
   newTitle,
   newStatus,
   newAssigendID,
   setNewTitle,
   setNewStatus,
   setnewAssigendID,
-  handleCreate
-}) {
+handleUpdate}) {
   return (
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        handleCreate();
+        handleUpdate();
       }}
       className="p-6"
     >
@@ -51,7 +50,7 @@ export default function TaskCreationForm({
         className="bg-green-600 text-white px-4 py-1 rounded mt-2 hover:cursor-pointer"
         
       >
-        Create NOW
+        Update
       </button>
     </form>
   );
