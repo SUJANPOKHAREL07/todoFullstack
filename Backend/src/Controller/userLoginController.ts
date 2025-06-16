@@ -6,6 +6,7 @@ import {
   saveSessionData,
   storeUserLoginModal,
 } from "../model/userLoginModel";
+import { create } from "domain";
 
 const checkLogin = async (req: Request, res: Response) => {
   try {
@@ -20,15 +21,19 @@ const checkLogin = async (req: Request, res: Response) => {
 
     if (check && check.length > 0) {
       const checkMail = await checkinUserLogin(email);
-      const getID = await getUserIDById(email);
-      console.log(getID);
-      const userID = Number(getID);
+      console.log(checkMail)
       if (checkMail === undefined || checkMail === null) {
         const store = await storeUserLoginModal({ email, password });
-        const randomToken = crypto.randomUUID();
-        const createSession = await saveSessionData(userID, randomToken);
-
         res.status(200).json(" logged in");
+        console.log(store)
+        const getID = await getUserIDById(email);
+        console.log("this is the user id",getID);
+        const userID = Number(getID?.id);
+        const randomToken = crypto.randomUUID();
+        console.log(randomToken)
+        const createSession = await saveSessionData(userID, randomToken);
+        console.log(createSession)
+
       } else {
         res.status(400).json("Already Logged in");
       }

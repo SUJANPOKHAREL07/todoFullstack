@@ -7,6 +7,7 @@ import {
   updteUserController,
 } from "../Controller/userController";
 import { checkLogin } from "../Controller/userLoginController";
+import { logoutCheck } from "../Controller/userLogoutController";
 
 const userRouter = Router();
 
@@ -15,6 +16,7 @@ userRouter.put("/:id", updteUserController);
 userRouter.delete("/:id", DeleteUserById);
 userRouter.get("/", getUserController);
 userRouter.post("/login", checkLogin);
+userRouter.post("/logout", logoutCheck);
 userRouter.get("/:id", getByidController);
 
 export default userRouter;
