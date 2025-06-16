@@ -30,19 +30,26 @@ enum Taskstatus {
 }
 
 model User {
-  id            Int             @id @default(autoincrement())
-  userName      String          @unique
-  email         String          @unique
-  password      String
-  createdAt     DateTime        @default(now())
-  Tasktodo      Tasktodo[]
+  id        Int        @id @default(autoincrement())
+  userName  String     @unique
+  email     String     @unique
+  password  String
+  createdAt DateTime   @default(now())
+  Tasktodo  Tasktodo[]
 
+  SessionTable SessionTable[]
 }
 
 model UserloginData {
-  id       Int    @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 
   email    String @unique
   password String
-  
+}
+
+model SessionTable {
+  id     Int  @id @default(autoincrement())
+  userID Int
+  randomToken String @unique
+  user   User @relation(fields: [userID], references: [id])
 }
