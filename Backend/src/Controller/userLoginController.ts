@@ -21,19 +21,33 @@ const checkLogin = async (req: Request, res: Response) => {
 
     if (check && check.length > 0) {
       const checkMail = await checkinUserLogin(email);
-      console.log(checkMail)
+      console.log(checkMail);
       if (checkMail === undefined || checkMail === null) {
         const store = await storeUserLoginModal({ email, password });
-        res.status(200).json(" logged in");
-        console.log(store)
+       
+        console.log(store);
         const getID = await getUserIDById(email);
-        console.log("this is the user id",getID);
+        console.log("this is the user id", getID);
         const userID = Number(getID?.id);
+        // const randomToken = crypto.randomUUID();
         const randomToken = crypto.randomUUID();
-        console.log(randomToken)
+        const newCookie = randomToken;
+        console.log(randomToken);
         const createSession = await saveSessionData(userID, randomToken);
-        console.log(createSession)
-
+        console.log('aaaaaa',createSession);
+        const EXPIRY_TIME_IN_SECONDS = 200;
+        // const EXPIRY_TIME_IN_SECONDS = 500;
+        res.cookie("authorization", randomToken, {
+          path: "/",
+          httpOnly: true,
+          expires: new Date(Date.now() + EXPIRY_TIME_IN_SECONDS * 1000),
+          sameSite: "lax",
+          // secure: process.env["ENVIRONMENT"] === "prod",
+          secure: true,
+        });
+         res.status(200).json(" logged in");
+        res.status(200).json({message: "this is cookie"})
+        return
       } else {
         res.status(400).json("Already Logged in");
       }
