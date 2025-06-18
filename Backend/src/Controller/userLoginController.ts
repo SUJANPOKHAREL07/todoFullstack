@@ -7,6 +7,8 @@ import {
   storeUserLoginModal,
 } from "../model/userLoginModel";
 import { create } from "domain";
+import { EXPIRY_TIME_IN_SECONDS } from "../tokens/expirytime";
+import { generateTokensJWT, Tokenload } from "../tokens/jwt";
 
 const checkLogin = async (req: Request, res: Response) => {
   try {
@@ -30,12 +32,15 @@ const checkLogin = async (req: Request, res: Response) => {
         console.log("this is the user id", getID);
         const userID = Number(getID?.id);
         // const randomToken = crypto.randomUUID();
-        const randomToken = crypto.randomUUID();
-        const newCookie = randomToken;
-        console.log(randomToken);
+        const userPayload:Tokenload={
+          email: check[0]?.email ?? ""
+        }
+
+      const randomToken= await generateTokensJWT(userPayload)
+    
         const createSession = await saveSessionData(userID, randomToken);
         console.log('aaaaaa',createSession);
-        const EXPIRY_TIME_IN_SECONDS = 200;
+        
         // const EXPIRY_TIME_IN_SECONDS = 500;
         res.cookie("authorization", randomToken, {
           path: "/",
