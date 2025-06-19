@@ -31,6 +31,10 @@ if (!tokenobj || !tokenobj.randomToken) {
     console.log(randomToken);
     const logoutfromLoginTable = await deleteAfterLogout(email);
     const deletefromSession = await deleteAfterLogoutSession(randomToken);
+    
+    res.clearCookie("authorization")
+    res.clearCookie("refresh_autho")
+    
     res.status(200).json("Logout Success");
   } catch (err) {
     res.status(404).json("Unable to Logout");

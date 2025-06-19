@@ -1,7 +1,7 @@
 import { error } from "console"
 import dotenv from "dotenv"
 import {sign,verify} from "jsonwebtoken"
-import { EXPIRY_TIME_IN_SECONDS } from "./expirytime"
+import { EXPIRY_TIME_IN_SECONDS, EXPIRY_TIME_REFRESH_TOKEN } from "./expirytime"
 
 
 dotenv.config()
@@ -28,4 +28,18 @@ export function generateTokensJWT(loadToken:Tokenload){
 export function verifyTokenJWT(token:string):Tokenload{
     const checkToken= verify(token,jwtScerete)
     return checkToken as Tokenload
+}
+
+//creating refresh token
+
+export function generateRefreshToken(loadToken:Tokenload){
+    const refresh= sign(loadToken,jwtScerete,{
+        expiresIn: EXPIRY_TIME_REFRESH_TOKEN
+    })
+    return refresh
+}
+export function verifyRefreshToken(token:string):Tokenload{
+    const refresh=verify(token,jwtScerete)
+    console.log(refresh)
+    return refresh as Tokenload
 }

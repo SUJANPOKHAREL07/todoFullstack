@@ -7,8 +7,8 @@ import {
   storeUserLoginModal,
 } from "../model/userLoginModel";
 import { create } from "domain";
-import { EXPIRY_TIME_IN_SECONDS } from "../tokens/expirytime";
-import { generateTokensJWT, Tokenload } from "../tokens/jwt";
+import { EXPIRY_TIME_IN_SECONDS, EXPIRY_TIME_REFRESH_TOKEN } from "../tokens/expirytime";
+import { generateRefreshToken, generateTokensJWT, Tokenload } from "../tokens/jwt";
 
 const checkLogin = async (req: Request, res: Response) => {
   try {
@@ -38,20 +38,32 @@ const checkLogin = async (req: Request, res: Response) => {
 
       const randomToken= await generateTokensJWT(userPayload)
     
-        const createSession = await saveSessionData(userID, randomToken);
-        console.log('aaaaaa',createSession);
-        
-        // const EXPIRY_TIME_IN_SECONDS = 500;
-        res.cookie("authorization", randomToken, {
-          path: "/",
-          httpOnly: true,
-          expires: new Date(Date.now() + EXPIRY_TIME_IN_SECONDS * 1000),
-          sameSite: "lax",
-          // secure: process.env["ENVIRONMENT"] === "prod",
-          secure: true,
-        });
+      // console.log('aaaaaa',createSession);
+      
+      // const EXPIRY_TIME_IN_SECONDS = 500;
+      res.cookie("authorization", randomToken, {
+        path: "/",
+        httpOnly: true,
+        expires: new Date(Date.now() + EXPIRY_TIME_IN_SECONDS * 1000),
+        sameSite: "lax",
+        // secure: process.env["ENVIRONMENT"] === "prod",
+        secure: false,
+      });
+      
+      //Creating Refresh Token
+      const refreshToken= await generateRefreshToken(userPayload)
+      const createSession = await saveSessionData(userID, refreshToken);
+      res.cookie("refresh_autho",refreshToken,{
+        path:'/',
+        httpOnly:true,
+        // sameSite:'lax',
+        expires:new Date(Date.now()+EXPIRY_TIME_REFRESH_TOKEN*1000),
+        secure:false
+
+      })
+
          res.status(200).json(" logged in");
-        res.status(200).json({message: "this is cookie"})
+        // res.status(200).json({message: "this is cookie"})
         return
       } else {
         res.status(400).json("Already Logged in");
